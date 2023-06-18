@@ -3,5 +3,12 @@
   "separate-pull-requests": true,
   "tag-separator": "/",
   "packages": {
+    "charts/hello-world": {
+      "release-type": "helm",
+      "changelog-path": "CHANGELOG.md",
+      "bump-minor-pre-major": true,
+      "extra-label": "charts/<chart-name>",
+      "release-label": "charts/<chart-name>"
+    }
   }
 }
