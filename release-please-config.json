@@ -7,8 +7,8 @@
       "release-type": "helm",
       "changelog-path": "CHANGELOG.md",
       "bump-minor-pre-major": true,
-      "extra-label": "charts/<chart-name>",
-      "release-label": "charts/<chart-name>"
+      "extra-label": "charts/hello-world",
+      "release-label": "charts/hello-world"
     }
   }
 }
