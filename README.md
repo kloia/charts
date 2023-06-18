@@ -1,0 +1,17 @@
+<img src="/docs/assets/images/logos/kloia-logo-multicolor.svg" alt="Kloia Logo" title="Kloia" align="right" height="96" width="96"/>
+
+# Kloia Helm Charts
+
+## Quickstart
+
+```shell
+helm repo add https://kloia.github.io/charts
+
+helm install kloia/<chart-name>
+```
+
+## Charts
+
+## Contributing
+
+See [CONTRIBUTING.md](/CONTRIBUTING.md)

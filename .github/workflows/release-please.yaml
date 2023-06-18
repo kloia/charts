@@ -1,0 +1,126 @@
+name: "Release Please + Helm Index"
+
+on:
+  push:
+    branches:
+      - main
+
+permissions:
+  contents: write
+  pull-requests: write
+
+jobs:
+  release-please:
+    name: "Release"
+    runs-on: ubuntu-latest
+    outputs:
+      release: ${{ toJson(steps.release.outputs) }}
+      releases_created: ${{ steps.release.outputs.releases_created }}
+    steps:
+      - uses: google-github-actions/release-please-action@v3
+        id: release
+        with:
+          command: manifest
+
+  package-upload-index:
+    name: "Package chart, Upload to Release, Index to Helm repo"
+    if: ${{ needs.release-please.outputs.releases_created }}
+    needs:
+      - release-please
+    strategy:
+      matrix:
+        released_path: ${{ fromJson(fromJson(needs.release-please.outputs.release).paths_released) }}
+    runs-on: ubuntu-latest
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+        with:
+          ref: ${{ needs.release-please.outputs.release.tag_name }}
+          path: tagged
+
+      - name: Install Helm
+        uses: azure/setup-helm@v3
+        with:
+          token: "${{ secrets.GITHUB_TOKEN }}"
+
+      - name: Get chart info from release
+        id: chart
+        working-directory: tagged
+        run: |
+          tag='${{ fromJson(needs.release-please.outputs.release)[format('{0}--tag_name', matrix.released_path)] }}'
+          echo "tag=$tag" >> "$GITHUB_OUTPUT"
+
+          name="${tag%%/*}"
+          echo "name=$name" >> "$GITHUB_OUTPUT"
+
+          path="charts/$name"
+          echo "path=$path" >> "$GITHUB_OUTPUT"
+
+      - name: Package Helm chart
+        id: package
+        working-directory: tagged
+        run: |
+          helm package ${{ steps.chart.outputs.path }} \
+          --destination packaged/
+
+          file_name=$(ls -1 packaged/)
+          echo "file_name=$file_name" >> "$GITHUB_OUTPUT"
+
+          file_path="packaged/$file_name"
+          echo "file_path=$file_path" >> "$GITHUB_OUTPUT"
+
+      # todo: prevent this action from creating a new release if it does not exist
+      - name: Upload package
+        uses: softprops/action-gh-release@v1
+        id: upload
+        with:
+          tag_name: ${{ steps.chart.outputs.tag }}
+          files: "tagged/${{ steps.package.outputs.file_path }}"
+
+      - name: Get package download URL
+        id: assets
+        working-directory: tagged
+        run: |
+          assets_array='${{ steps.upload.outputs.assets }}'
+          browser_download_url=$(echo $assets_array | jq -cr '.[] | select( .name == "${{ steps.package.outputs.file_name }}") | .browser_download_url ')
+          echo "browser_download_url=$browser_download_url" >> "$GITHUB_OUTPUT"
+
+      # TODO: implement concurrency
+      # If after this checkout step, another workflow or something updates the helm index.yaml, and this workflow run
+      # gets left with a stale index.yaml, the --merge option may work incorrectly.
+      #
+      # Unfortunately Github's own concurrency option is not a queue, and will cancel any other parallel workflows.
+      # We need to use an action for mutexes/locks.
+      #
+      # An alternative solution is not using --merge altogether and ensuring idempotency.
+      # Not using merge comes at the cost of storing **every** packaged chart `.tgz` file on `helm-repo/main`,
+      # defeating the whole purpose of using GitHub Releases.
+
+      - name: Checkout helm-repo/main github page
+        uses: actions/checkout@v3
+        with:
+          ref: helm-repo/main
+          path: gh-pages
+
+      - name: Copy package to gh-pages
+        run: |
+          cp "tagged/${{ steps.package.outputs.file_path }}" "gh-pages/${{ steps.package.outputs.file_name }}"
+
+      - name: Build repo index
+        working-directory: gh-pages
+        run: |
+          helm repo index . --merge index.yaml
+
+      - name: Point package index to Github Release download url
+        working-directory: gh-pages
+        run: |
+          yq -i '(.entries.${{ steps.chart.outputs.name }}[] | select(.urls | contains(["${{ steps.package.outputs.file_name }}"])) | .urls ) = ["${{ steps.assets.outputs.browser_download_url }}"]' index.yaml
+
+      - name: Push index
+        working-directory: gh-pages
+        run: |
+          git config user.name github-actions[bot]
+          git config user.email 41898282+github-actions[bot]@users.noreply.github.com
+          git add index.yaml
+          git commit -m "chore(index): add ${{ steps.package.outputs.file_name }}"
+          git push
