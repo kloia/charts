@@ -1,7 +1,0 @@
-#file: noinspection KubernetesUnknownValues
-apiVersion: v1
-kind: ConfigMap
-metadata:
-  name: {{ .Release.Name }}-{{ .Release.Revision}}
-data:
-  message: {{ .Values.message | quote }}
