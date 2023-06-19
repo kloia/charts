@@ -18,12 +18,6 @@ new charts and bumping a chart to `1.0.0`.
 3. Setup versioning
    - Recommended first time version numbers are `0.1.0` and `1.0.0`
    - Set the initial version in `charts/<chart-name>/Chart.yaml`
-   - Set the initial version in `.release-please-manifest.json` as
-     ```json
-     {
-       "charts/<chart-name>": "<initial-version>"
-     }
-     ```
    - Set the release-please configuration in `release-please-config.json`
      under the packages field as
      ```json5
@@ -47,11 +41,15 @@ new charts and bumping a chart to `1.0.0`.
      charts/<chart-name>:
      - charts/<chart-name>/**
      ```
-5. Write your chart
+5. Implement the chart's functionality
 6. Open a pull request against `main`, with the PR title matching
    the [Conventional Commits](https://www.conventionalcommits.org/en/v1.0.0/) spec.
 
    e.g.: `feat(<chart-name>): create <chart-name>`
+7. **And the most important part**:
+
+   When merging the pull request, add `Release-As: <initial-version>` at the top of squash merge
+   description, so it ends up in the commit message body on `main`
 
 ## Importing an external chart
 
@@ -59,12 +57,6 @@ new charts and bumping a chart to `1.0.0`.
 2. Copy your chart under `charts/`, make sure the name matches the convention of `lower-case-with-dashes`
 3. Setup versioning
    - Get the current version from `charts/<chart-name>/Chart.yaml`
-   - Set the current version in `.release-please-manifest.json` as
-     ```json
-     {
-       "charts/<chart-name>": "<current-version>"
-     }
-     ```
    - Set the release-please configuration in `release-please-config.json`
      under the packages field as
      ```json5
@@ -92,15 +84,10 @@ new charts and bumping a chart to `1.0.0`.
    the [Conventional Commits](https://www.conventionalcommits.org/en/v1.0.0/) spec.
 
    e.g.: `feat(<chart-name>): import <chart-name>`
+6. **And the most important part**:
 
-## Reviewing Pull Requests
-
-This automated versioning encourages requires a linear git history, for this
-only "squash and merge" is allowed.
-
-Because all is squashed, contributors don't have to use conventional commits
-within the scope of pull requests, just the pull request title having a valid conventional commit message
-is enough.
+   When merging the pull request, add `Release-As: <current-version>` at the top of squash merge
+   description, so it ends up in the commit message body on `main`
 
 ## Modifying an existing chart
 
@@ -115,6 +102,22 @@ don't touch the version values.
    e.g.: `feat(<chart-name>): add new value`
 
    e.g.: `fix(<chart-name>): incorrect value usage`
+ 
+## Reviewing Pull Requests
+
+**IMPORTANT: If the PR is for a new or imported chart, make sure to add 
+`Release-As: <current-version>` at the top of squash merge
+description, so it ends up in the commit message body on `main`.**
+
+This is how release-please picks up initial releases. If this gets skipped,
+release-please will want to create an unnecessary version bump.
+
+This automated versioning encourages requires a linear git history, 
+so only "squash and merge" is allowed on the repo.
+
+Because all commits under the pr are squashed, contributors don't have to use conventional commits
+within the scope of pull requests, just the pull request title having a valid conventional commit message
+is enough.
 
 # Releasing Charts
 
