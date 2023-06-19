@@ -12,6 +12,10 @@ helm install kloia/<chart-name>
 
 ## Charts
 
+### [aws-alb-ingress](/charts/aws-alb-ingress/README.md)
+
+AWS ALB Ingress Annotations with a proper schema.
+
 ## Contributing
 
 See [CONTRIBUTING.md](/CONTRIBUTING.md)

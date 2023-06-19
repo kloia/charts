@@ -1,2 +1,5 @@
 charts/hello-world:
   - charts/hello-world/**
+
+charts/aws-alb-ingress:
+  - charts/hello-world/**
