@@ -1,5 +1,16 @@
 apiVersion: v1
 entries:
+  aws-alb-ingress:
+    - apiVersion: v2
+      appVersion: v2.5.2
+      created: "2023-06-19T10:00:06.694835951Z"
+      description: 'A typed and validated alternative to AWS Load Balancer Controller''s suite of Ingress annotations '
+      digest: bb83188b5c20e0861b26bd8ccf4240b780f78ef78ac29752fb14ebb068d45dc9
+      name: aws-alb-ingress
+      type: application
+      urls:
+        - https://github.com/kloia/charts/releases/download/aws-alb-ingress/v0.1.0/aws-alb-ingress-0.1.0.tgz
+      version: 0.1.0
   hello-world:
     - apiVersion: v2
       appVersion: 1.0.0
@@ -11,4 +22,4 @@ entries:
       urls:
         - https://github.com/kloia/charts/releases/download/hello-world/v0.1.0/hello-world-0.1.0.tgz
       version: 0.1.0
-generated: "2023-06-18T22:58:13.6562251Z"
+generated: "2023-06-19T10:00:06.694302943Z"
