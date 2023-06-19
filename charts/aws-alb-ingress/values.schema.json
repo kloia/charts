@@ -1,0 +1,329 @@
+{
+  "$schema": "https://json-schema.org/draft-07/schema#",
+  "definitions": {
+    "port-number": {
+      "type": "integer",
+      "minimum": 0,
+      "maximum": 65535
+    }
+  },
+  "properties": {
+    "name": {
+      "description": "Ingress object name, defaults to Helm release name",
+      "type": "string",
+      "default": "Helm release name"
+    },
+    "namespace": {
+      "description": "Ingress object namespace, defaults to Helm release namespace",
+      "type": "string",
+      "default": "Helm release namespace"
+    },
+    "alb": {
+      "$comment": "TODO: Links to documentation, descriptions",
+      "$comment": "TODO: Exclusive/conditional properties (oneOf at the toplevel)",
+      "description": "AWS Load Balancer Controller Ingress options that will be converted to annotations",
+      "type": "object",
+      "properties": {
+        "load-balancer-name": {
+          "description": "https://kubernetes-sigs.github.io/aws-load-balancer-controller/v2.5/guide/ingress/annotations/#load-balancer-name",
+          "type": "string",
+          "examples": [
+            "simple-name"
+          ],
+          "maxLength": 32,
+          "minLength": 1
+        },
+        "group.name": {
+          "description": "https://kubernetes-sigs.github.io/aws-load-balancer-controller/v2.5/guide/ingress/annotations/#group.name",
+          "type": "string",
+          "$comment": "TODO: Regex for alphanum, -, ., ",
+          "minLength": 1,
+          "maxLength": 63
+        },
+        "group.order": {
+          "description": "https://kubernetes-sigs.github.io/aws-load-balancer-controller/v2.5/guide/ingress/annotations/#group.order",
+          "type": "integer",
+          "minimum": -1000,
+          "maximum": 1000
+        },
+        "tags": {
+          "description": "https://kubernetes-sigs.github.io/aws-load-balancer-controller/v2.5/guide/ingress/annotations/#tags",
+          "type": "object",
+          "minProperties": 1,
+          "additionalProperties": {
+            "type": "string"
+          }
+        },
+        "ip-address-type": {
+          "description": "https://kubernetes-sigs.github.io/aws-load-balancer-controller/v2.5/guide/ingress/annotations/#ip-address-type",
+          "enum": [
+            "ipv4",
+            "dualstack"
+          ]
+        },
+        "scheme": {
+          "description": "https://kubernetes-sigs.github.io/aws-load-balancer-controller/v2.5/guide/ingress/annotations/#scheme",
+          "enum": [
+            "internal",
+            "internet-facing"
+          ]
+        },
+        "subnets": {
+          "description": "https://kubernetes-sigs.github.io/aws-load-balancer-controller/v2.5/guide/ingress/annotations/#subnets",
+          "type": "array",
+          "minItems": 1,
+          "items": {
+            "type": "string"
+          }
+        },
+        "security-groups": {
+          "description": "https://kubernetes-sigs.github.io/aws-load-balancer-controller/v2.5/guide/ingress/annotations/#security-groups",
+          "type": "array",
+          "minItems": 1,
+          "items": {
+            "type": "string"
+          }
+        },
+        "manage-backend-security-group-rules": {
+          "description": "https://kubernetes-sigs.github.io/aws-load-balancer-controller/v2.5/guide/ingress/annotations/#manage-backend-security-group-rules",
+          "$comment": "TODO: Depends on security-groups",
+          "type": "boolean"
+        },
+        "customer-owned-ipv4-pool": {
+          "description": "https://kubernetes-sigs.github.io/aws-load-balancer-controller/v2.5/guide/ingress/annotations/#customer-owned-ipv4-pool",
+          "type": "string"
+        },
+        "load-balancer-attributes": {
+          "description": "https://kubernetes-sigs.github.io/aws-load-balancer-controller/v2.5/guide/ingress/annotations/#load-balancer-attributes",
+          "$comment": "TODO: Typed properties from https://docs.aws.amazon.com/elasticloadbalancing/latest/APIReference/API_LoadBalancerAttribute.html",
+          "type": "object",
+          "additionalProperties": {
+            "type": "string"
+          }
+        },
+        "wafv2-acl-arn": {
+          "description": "https://kubernetes-sigs.github.io/aws-load-balancer-controller/v2.5/guide/ingress/annotations/#wafv2-acl-arn",
+          "$comment": "TODO: regex for arn",
+          "type": "string"
+        },
+        "waf-acl-id": {
+          "description": "https://kubernetes-sigs.github.io/aws-load-balancer-controller/v2.5/guide/ingress/annotations/#waf-acl-id",
+          "type": "string"
+        },
+        "shield-advanced-protection": {
+          "description": "https://kubernetes-sigs.github.io/aws-load-balancer-controller/v2.5/guide/ingress/annotations/#shield-advanced-protection",
+          "type": "boolean"
+        },
+        "listen-ports": {
+          "description": "https://kubernetes-sigs.github.io/aws-load-balancer-controller/v2.5/guide/ingress/annotations/#listen-ports",
+          "type": "array",
+          "minItems": 1,
+          "items": {
+            "anyOf": [
+              {
+                "type": "object",
+                "maxProperties": 1,
+                "properties": {
+                  "HTTP": {
+                    "$ref": "#/definitions/port-number"
+                  }
+                }
+              },
+              {
+                "type": "object",
+                "maxProperties": 1,
+                "properties": {
+                  "HTTPS": {
+                    "$ref": "#/definitions/port-number"
+                  }
+                }
+              }
+            ]
+          }
+        },
+        "ssl-redirect": {
+          "description": "https://kubernetes-sigs.github.io/aws-load-balancer-controller/v2.5/guide/ingress/annotations/#ssl-redirect",
+          "$ref": "#/definitions/port-number"
+        },
+        "inbound-cidrs": {
+          "description": "https://kubernetes-sigs.github.io/aws-load-balancer-controller/v2.5/guide/ingress/annotations/#inbound-cidrs",
+          "type": "array",
+          "minItems": 1,
+          "items": {
+            "$comment": "TODO: Regex for ipv4 and ipv6 CIDR validation",
+            "type": "string"
+          }
+        },
+        "certificate-arn": {
+          "description": "https://kubernetes-sigs.github.io/aws-load-balancer-controller/v2.5/guide/ingress/annotations/#certificate-arn",
+          "type": "array",
+          "minItems": 1,
+          "items": {
+            "$comment": "TODO: Regex for certificatearn",
+            "type": "string"
+          }
+        },
+        "ssl-policy": {
+          "description": "https://kubernetes-sigs.github.io/aws-load-balancer-controller/v2.5/guide/ingress/annotations/#ssl-policy",
+          "type": "string"
+        },
+        "target-type": {
+          "description": "https://kubernetes-sigs.github.io/aws-load-balancer-controller/v2.5/guide/ingress/annotations/#target-type",
+          "enum": [
+            "instance",
+            "ip"
+          ]
+        },
+        "backend-protocol": {
+          "description": "https://kubernetes-sigs.github.io/aws-load-balancer-controller/v2.5/guide/ingress/annotations/#backend-protocol",
+          "type": "string",
+          "enum": [
+            "HTTP",
+            "HTTPS"
+          ]
+        },
+        "backend-protocol-version": {
+          "description": "https://kubernetes-sigs.github.io/aws-load-balancer-controller/v2.5/guide/ingress/annotations/#backend-protocol-version",
+          "$comment": "Possible values found from: https://github.com/kubernetes-sigs/aws-load-balancer-controller/blob/9bf753bd5c843ab916462efcbafa1f11cfeddf77/pkg/model/elbv2/listener.go#L61",
+          "$comment": "TODO: Some of the backend-protocol and backend-protocol combinations are invalid, wrap both in oneOf",
+          "type": "string",
+          "enum": [
+            "HTTP1",
+            "HTTP2",
+            "GRPC"
+          ]
+        },
+        "target-group-attributes": {
+          "description": "https://kubernetes-sigs.github.io/aws-load-balancer-controller/v2.5/guide/ingress/annotations/#target-group-attributes",
+          "$comment": "TODO: get possible values from https://docs.aws.amazon.com/elasticloadbalancing/latest/application/load-balancer-target-groups.html#target-group-attributes",
+          "type": "object",
+          "additionalProperties": {
+            "type": "string"
+          }
+        },
+        "healthcheck-port": {
+          "description": "https://kubernetes-sigs.github.io/aws-load-balancer-controller/v2.5/guide/ingress/annotations/#healthcheck-port",
+          "oneOf": [
+            {
+              "type": "string",
+              "const": "traffic-port"
+            },
+            {
+              "$ref": "#/definitions/port-number"
+            }
+          ]
+        },
+        "healthcheck-protocol": {
+          "description": "https://kubernetes-sigs.github.io/aws-load-balancer-controller/v2.5/guide/ingress/annotations/#healthcheck-protocol",
+          "type": "string",
+          "enum": [
+            "HTTP",
+            "HTTPS"
+          ]
+        },
+        "healthcheck-path": {
+          "description": "https://kubernetes-sigs.github.io/aws-load-balancer-controller/v2.5/guide/ingress/annotations/#healthcheck-path",
+          "$comment": "TODO: Path validation",
+          "type": "string"
+        },
+        "healthcheck-interval-seconds": {
+          "description": "https://kubernetes-sigs.github.io/aws-load-balancer-controller/v2.5/guide/ingress/annotations/#healthcheck-interval-seconds",
+          "type": "integer",
+          "minimum": 0
+        },
+        "healthcheck-timeout-seconds": {
+          "description": "https://kubernetes-sigs.github.io/aws-load-balancer-controller/v2.5/guide/ingress/annotations/#healthcheck-timeout-seconds",
+          "type": "integer",
+          "minimum": 0
+        },
+        "healthy-threshold-count": {
+          "description": "https://kubernetes-sigs.github.io/aws-load-balancer-controller/v2.5/guide/ingress/annotations/#healthy-threshold-count",
+          "type": "integer",
+          "minimum": 0
+        },
+        "unhealthy-threshold-count": {
+          "description": "https://kubernetes-sigs.github.io/aws-load-balancer-controller/v2.5/guide/ingress/annotations/#unhealthy-threshold-count",
+          "type": "integer",
+          "minimum": 0
+        },
+        "success-codes": {
+          "description": "https://kubernetes-sigs.github.io/aws-load-balancer-controller/v2.5/guide/ingress/annotations/#success-codes",
+          "pattern": "^(\\d+|(\\d+-\\d+)|(\\d+(,\\d+)*))$",
+          "type": "string"
+        },
+        "auth-type": {
+          "description": "https://kubernetes-sigs.github.io/aws-load-balancer-controller/v2.5/guide/ingress/annotations/#auth-type",
+          "enum": [
+            "none",
+            "oidc",
+            "cognito"
+          ]
+        },
+        "auth-idp-cognito": {
+          "description": "https://kubernetes-sigs.github.io/aws-load-balancer-controller/v2.5/guide/ingress/annotations/#auth-idp-cognito",
+          "$comment": "TODO: Add schema",
+          "type": "object"
+        },
+        "auth-idp-oidc": {
+          "description": "https://kubernetes-sigs.github.io/aws-load-balancer-controller/v2.5/guide/ingress/annotations/#auth-idp-oidc",
+          "$comment": "TODO: Add schema",
+          "type": "object"
+        },
+        "auth-on-unauthenticated-request": {
+          "description": "https://kubernetes-sigs.github.io/aws-load-balancer-controller/v2.5/guide/ingress/annotations/#auth-on-unauthenticated-request",
+          "type": "string",
+          "enum": [
+            "authenticate",
+            "allow",
+            "deny"
+          ]
+        },
+        "auth-scope": {
+          "description": "https://kubernetes-sigs.github.io/aws-load-balancer-controller/v2.5/guide/ingress/annotations/#auth-scope",
+          "type": "array",
+          "uniqueItems": true,
+          "items": {
+            "enum": [
+              "phone",
+              "email",
+              "profile",
+              "openid",
+              "aws.cognito.signin.user.admin"
+            ]
+          }
+        },
+        "auth-session-cookie": {
+          "description": "https://kubernetes-sigs.github.io/aws-load-balancer-controller/v2.5/guide/ingress/annotations/#auth-session-cookie",
+          "type": "string",
+          "minLength": 1
+        },
+        "auth-session-timeout": {
+          "description": "https://kubernetes-sigs.github.io/aws-load-balancer-controller/v2.5/guide/ingress/annotations/#auth-session-timeout",
+          "type": "integer",
+          "minimum": 0
+        },
+        "target-node-labels": {
+          "description": "https://kubernetes-sigs.github.io/aws-load-balancer-controller/v2.5/guide/ingress/annotations/#target-node-labels",
+          "type": "object",
+          "additionalProperties": {
+            "type": "string"
+          }
+        }
+      },
+      "patternProperties": {
+        "^actions.*$": {
+          "$comment": "TODO: schema",
+          "type": "object"
+        },
+        "^conditions.*$": {
+          "$comment": "TODO: schema",
+          "type": "object"
+        }
+      }
+    },
+    "spec": {
+      "$comment": "Ingress Spec, straight from the source",
+      "$ref": "https://raw.githubusercontent.com/kubernetes/kubernetes/master/api/openapi-spec/v3/apis__networking.k8s.io__v1_openapi.json#/components/schemas/io.k8s.api.networking.v1.IngressSpec"
+    }
+  }
+}

@@ -1,0 +1,13 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: {{ default .Release.Name .Values.name }}
+  namespace: {{ default .Release.Namespace .Values.name }}
+  {{- if or
+    .Values.alb
+  }}
+  annotations:
+    {{- .Values.alb | include "toAlbAnnotations" }}
+  {{- end }}
+spec:
+  {{- .Values.spec | toYaml | nindent 2 }}

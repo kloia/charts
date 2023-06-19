@@ -9,6 +9,13 @@
       "bump-minor-pre-major": true,
       "extra-label": "charts/hello-world",
       "release-label": "charts/hello-world"
+    },
+    "charts/aws-alb-ingress": {
+      "release-type": "helm",
+      "changelog-path": "CHANGELOG.md",
+      "bump-minor-pre-major": true,
+      "extra-label": "charts/aws-alb-ingress",
+      "release-label": "charts/aws-alb-ingress"
     }
   }
 }
