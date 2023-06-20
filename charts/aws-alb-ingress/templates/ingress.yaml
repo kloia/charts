@@ -5,9 +5,15 @@ metadata:
   namespace: {{ default .Release.Namespace .Values.name }}
   {{- if or
     .Values.alb
+    .Values.extraAnnotations
   }}
   annotations:
+    {{- if .Values.alb -}}
     {{- .Values.alb | include "toAlbAnnotations" }}
+    {{- end -}}
+    {{- if .Values.extraAnnotations -}}
+    {{- .Values.extraAnnotations | toYaml | nindent 4}}
+    {{- end -}}
   {{- end }}
 spec:
   {{- .Values.spec | toYaml | nindent 2 }}

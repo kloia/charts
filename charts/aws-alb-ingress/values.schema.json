@@ -321,6 +321,14 @@
         }
       }
     },
+    "extraAnnotations": {
+      "description": "Extra annotations to add. Do not use alb annotations, you may cause a conflict",
+      "type": "object",
+      "additionalProperties": {
+        "default": "",
+        "type": "string"
+      }
+    },
     "spec": {
       "$comment": "Ingress Spec, straight from the source",
       "$ref": "https://raw.githubusercontent.com/kubernetes/kubernetes/master/api/openapi-spec/v3/apis__networking.k8s.io__v1_openapi.json#/components/schemas/io.k8s.api.networking.v1.IngressSpec"
