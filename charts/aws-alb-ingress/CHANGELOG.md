@@ -1,5 +1,12 @@
 # Changelog
 
+## [0.2.0](https://github.com/kloia/charts/compare/aws-alb-ingress/v0.1.0...aws-alb-ingress/v0.2.0) (2023-06-20)
+
+
+### Features
+
+* add extra annotation support ([#9](https://github.com/kloia/charts/issues/9)) ([f4d540b](https://github.com/kloia/charts/commit/f4d540baf53311b971cac38561dda0145a6cd04b))
+
 ## 0.1.0 (2023-06-19)
 
 
