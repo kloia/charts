@@ -1,9 +1,8 @@
 apiVersion: v2
 name: aws-alb-ingress
-description: |
-  A typed and validated alternative to AWS Load Balancer Controller's suite of Ingress annotations
+description: >
+  A typed and validated alternative to AWS Load Balancer Controller's suite of
+  Ingress annotations
 type: application
-
 version: 0.1.0
-
-appVersion: "v2.5.2"
+appVersion: v2.5.2
