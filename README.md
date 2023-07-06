@@ -11,4 +11,6 @@ helm repo add https://kloia.github.io/charts
 helm install kloia/<chart-name>
 ```
 
+If you want to see the helm repo index itself, go to: [kloia.github.io/charts/index.yaml](https://kloia.github.io/charts/index.yaml])
+
 For more information visit [github.com/kloia/charts](https://github.com/kloia/charts)
