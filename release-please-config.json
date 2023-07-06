@@ -16,6 +16,13 @@
       "bump-minor-pre-major": true,
       "extra-label": "charts/aws-alb-ingress",
       "release-label": "charts/aws-alb-ingress"
+    },
+    "charts/karpenter": {
+      "release-type": "helm",
+      "changelog-path": "CHANGELOG.md",
+      "bump-minor-pre-major": true,
+      "extra-label": "charts/karpenter",
+      "release-label": "charts/karpenter"
     }
   }
 }
