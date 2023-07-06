@@ -16,6 +16,10 @@ helm install kloia/<chart-name>
 
 AWS ALB Ingress Annotations with a proper schema.
 
+### [karpenter](/charts/karpenter/README.md)
+
+Chart for karpenter with some modifications
+
 ## Contributing
 
 See [CONTRIBUTING.md](/CONTRIBUTING.md)
